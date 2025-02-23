@@ -1,0 +1,542 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Grocery Shop</title>
+    <style>
+        /* Reset and Basic Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #F5F5F5;
+            color: #212121;
+            line-height: 1.6;
+        }
+
+        /* Utility Classes */
+        .container {
+            width: 85%;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Color Scheme */
+        :root {
+            --deep-blue: #0D47A1;
+            --teal: #00ACC1;
+            --neon-green: #00E676;
+            --electric-purple: #D500F9;
+            --light-grey: #F5F5F5;
+            --dark-grey: #212121;
+            --white: #FFFFFF;
+        }
+
+        /* Header Styles */
+        #header {
+            background-color: var(--deep-blue);
+            color: var(--white);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        #header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        #navigation {
+            display: flex;
+            align-items: center;
+        }
+
+        #navigation ul {
+            list-style: none;
+            display: flex;
+        }
+
+        #navigation li {
+            margin-left: 20px;
+        }
+
+        #navigation a {
+            color: var(--white);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        #navigation a:hover {
+            background-color: var(--teal);
+        }
+
+        /* Search Bar */
+        #search-bar {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        #search-input {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        #search-button {
+            background-color: var(--neon-green);
+            color: var(--dark-grey);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #search-button:hover {
+            background-color: var(--electric-purple);
+            color: var(--white);
+        }
+
+        /* Voice Search */
+        #voice-search-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        #voice-search-button img {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+        }
+
+        /* Hero Section */
+        #hero {
+            background-color: var(--teal);
+            color: var(--white);
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        #hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        #hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Featured Sections */
+        #featured-sections {
+            padding: 2rem 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .featured-item {
+            background-color: var(--white);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .featured-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .featured-item h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Product Grid */
+        #product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 2rem 0;
+        }
+
+        .product-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-card img {
+            max-width: 100%;
+            height: auto;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .product-info {
+            padding: 1rem;
+        }
+
+        .product-info h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .price {
+            color: var(--deep-blue);
+            font-weight: bold;
+        }
+
+        .add-to-cart {
+            background-color: var(--neon-green);
+            color: var(--dark-grey);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .add-to-cart:hover {
+            background-color: var(--electric-purple);
+            color: var(--white);
+        }
+
+        /* Shopping Cart Drawer */
+        #cart-drawer {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100%;
+            background-color: var(--white);
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+            transition: right 0.3s ease;
+            z-index: 1001;
+            overflow-y: auto;
+        }
+
+        #cart-drawer.open {
+            right: 0;
+        }
+
+        #cart-header {
+            background-color: var(--deep-blue);
+            color: var(--white);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #close-cart {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        #cart-items {
+            padding: 1rem;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 1rem;
+        }
+
+        .cart-item img {
+            width: 50px;
+            height: 50px;
+            margin-right: 1rem;
+            border-radius: 4px;
+        }
+
+        .cart-item-info {
+            flex-grow: 1;
+        }
+
+        .cart-item-info h4 {
+            margin-bottom: 0.2rem;
+        }
+
+        .cart-item-price {
+            color: var(--deep-blue);
+            font-weight: bold;
+        }
+
+        #cart-total {
+            padding: 1rem;
+            text-align: right;
+            font-weight: bold;
+            border-top: 1px solid #ddd;
+        }
+
+        #checkout-button {
+            background-color: var(--neon-green);
+            color: var(--dark-grey);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        #checkout-button:hover {
+            background-color: var(--electric-purple);
+            color: var(--white);
+        }
+
+        /* Footer */
+        #footer {
+            background-color: var(--dark-grey);
+            color: var(--white);
+            text-align: center;
+            padding: 1rem 0;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            #header .container {
+                flex-direction: column;
+            }
+
+            #navigation {
+                margin-top: 1rem;
+            }
+
+            #navigation ul {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            #navigation li {
+                margin: 0.5rem 0;
+                text-align: center;
+            }
+
+            #search-bar {
+                width: 100%;
+                margin-top: 1rem;
+            }
+
+            #search-input {
+                width: 100%;
+            }
+
+            #featured-sections {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            #product-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            #cart-drawer {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header Section -->
+    <header id="header">
+        <div class="container">
+            <div id="logo">AI Grocery Shop</div>
+            <nav id="navigation">
+                <ul>
+                    <li><a href="#">Fresh Produce</a></li>
+                    <li><a href="#">Dairy</a></li>
+                    <li><a href="#">Bakery</a></li>
+                    <li><a href="#" onclick="toggleCartDrawer()">Cart</a></li>
+                </ul>
+                <div id="search-bar">
+                    <input type="text" id="search-input" placeholder="Search for products...">
+                    <button id="search-button">Search</button>
+                    <button id="voice-search-button" onclick="startVoiceSearch()">
+                        <img src="https://www.freeiconspng.com/thumbs/microphone-icon/microphone-icon-15.png"
+                            alt="Voice Search">
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="container">
+            <h1>Welcome to AI Grocery Shop</h1>
+            <p>Your personalized, efficient, and futuristic shopping experience starts here.</p>
+        </div>
+    </section>
+
+    <!-- Featured Sections -->
+    <section id="featured-sections" class="container">
+        <div class="featured-item">
+            <img src="https://images.unsplash.com/photo-1518843875459-f738682239a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Mzc0NDl8MHwxfHNlYXJjaHwxfHxGcmVzaCUyMFByb2R1Y2V8ZW58MHx8fHwxNzE3NDU5NjE4fDA&ixlib=rb-4.0.3&q=80&w=400"
+                alt="Fresh Produce">
+            <h3>Fresh Produce</h3>
+        </div>
+        <div class="featured-item">
+            <img src="https://images.unsplash.com/photo-1628088062854-d55765794a61?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Mzc0NDl8MHwxfHNlYXJjaHwxfHxEYWlyeXxlbnwwfHx8fDE3MTc0NTk2NzF8MA&ixlib=rb-4.0.3&q=80&w=400"
+                alt="Dairy">
+            <h3>Dairy</h3>
+        </div>
+        <div class="featured-item">
+            <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Mzc0NDl8MHwxfHNlYXJjaHwxfHxCYWtlcnl8ZW58MHx8fHwxNzE3NDU5NzEwfDA&ixlib=rb-4.0.3&q=80&w=400"
+                alt="Bakery">
+            <h3>Bakery</h3>
+        </div>
+    </section>
+
+    <!-- Product Grid -->
+    <section id="product-grid" class="container">
+        <!-- Product Card Example -->
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1608686207856-001b95cf60ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Mzc0NDl8MHwxfHNlYXJjaHwxfHxPcmFuZ2V8ZW58MHx8fHwxNzE3NDU5NzYzfDA&ixlib=rb-4.0.3&q=80&w=400"
+                alt="Orange">
+            <div class="product-info">
+                <h3>Orange</h3>
+                <p class="price">$1.00 / lb</p>
+                <button class="add-to-cart" onclick="addToCart('Orange', 1.00)">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Mzc0NDl8MHwxfHNlYXJjaHwxfHxNaWxrfGVufDB8fHx8MTcxNzQ1OTgwNHww&ixlib=rb-4.0.3&q=80&w=400"
+                alt="Milk">
+            <div class="product-info">
+                <h3>Milk</h3>
+                <p class="price">$3.50 / gallon</p>
+                <button class="add-to-cart" onclick="addToCart('Milk', 3.50)">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1587334274328-64189588a226?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Mzc0NDl8MHwxfHNlYXJjaHwxfHxCcmVhZCUyMHxlbnwwfHx8fDE3MTc0NTk4NDB8MA&ixlib=rb-4.0.3&q=80&w=400"
+                alt="Bread">
+            <div class="product-info">
+                <h3>Bread</h3>
+                <p class="price">$2.50 / loaf</p>
+                <button class="add-to-cart" onclick="addToCart('Bread', 2.50)">Add to Cart</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shopping Cart Drawer -->
+    <aside id="cart-drawer">
+        <div id="cart-header">
+            <span>Shopping Cart</span>
+            <button id="close-cart" onclick="toggleCartDrawer()">X</button>
+        </div>
+        <div id="cart-items">
+            <!-- Cart items will be added here dynamically -->
+        </div>
+        <div id="cart-total">Total: $0.00</div>
+        <button id="checkout-button">Checkout</button>
+    </aside>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <p>&copy; 2024 AI Grocery Shop. All rights reserved.</p>
+    </footer>
+
+    <script>
+        let cart = [];
+
+        function toggleCartDrawer() {
+            const cartDrawer = document.getElementById('cart-drawer');
+            cartDrawer.classList.toggle('open');
+        }
+
+        function addToCart(productName, price) {
+            cart.push({ name: productName, price: price });
+            updateCartDisplay();
+        }
+
+        function updateCartDisplay() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            cartItemsContainer.innerHTML = ''; // Clear previous items
+
+            let total = 0;
+            cart.forEach(item => {
+                total += item.price;
+                const cartItem = document.createElement('div');
+                cartItem.classList.add('cart-item');
+                cartItem.innerHTML = `
+                    <img src="https://via.placeholder.com/50" alt="${item.name}">
+                    <div class="cart-item-info">
+                        <h4>${item.name}</h4>
+                        <p class="cart-item-price">$${item.price.toFixed(2)}</p>
+                    </div>
+                `;
+                cartItemsContainer.appendChild(cartItem);
+            });
+
+            document.getElementById('cart-total').textContent = `Total: $${total.toFixed(2)}`;
+        }
+
+        function startVoiceSearch() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.start();
+
+            recognition.onresult = function (event) {
+                const speechResult = event.results[0][0].transcript;
+                document.getElementById('search-input').value = speechResult;
+                // You can add a function here to handle the search based on the voice input
+            };
+
+            recognition.onspeechend = function () {
+                recognition.stop();
+            };
+
+            recognition.onerror = function (event) {
+                console.error('Voice recognition error:', event.error);
+            };
+        }
+    </script>
+</body>
+
+</html>
